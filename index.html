@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hey Chutki, I'm Still Here</title>
+  <style>
+    body {
+      background: #f2f3f7;
+      color: #333;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      text-align: center;
+    }
+    .container {
+      max-width: 700px;
+      background: white;
+      border-radius: 1rem;
+      padding: 2rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    #messageBox, #vaultMessage, #futureMessage, #letterMessage {
+      margin: 1.5rem 0;
+      padding: 1rem;
+      background: #eef1f5;
+      border-radius: 0.75rem;
+      min-height: 80px;
+      font-size: 1.1rem;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    button {
+      background-color: #6c63ff;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      margin: 0.5rem;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #5851db;
+    }
+    .memory-wall {
+      margin-top: 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+    .memory-card {
+      background: #f9f9fc;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      font-size: 0.95rem;
+    }
+    .mood-buttons {
+      margin-top: 1.5rem;
+    }
+    .mood-buttons button {
+      font-size: 1.5rem;
+      padding: 0.5rem 1rem;
+    }
+    iframe {
+      border: none;
+      margin-top: 1rem;
+      width: 100%;
+      border-radius: 0.75rem;
+    }
+    footer {
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 id="greeting">Hi Chutki 👋</h1>
+    <p>Whenever you feel alone, overwhelmed, or just need a reminder—I'm still here.</p>
+
+    <div id="messageBox">Click the button below to hear from me.</div>
+    <button onclick="showMessage()">When You Feel Alone</button>
+
+    <div id="vaultMessage"></div>
+    <button onclick="revealVault()">Open When You Need a Smile</button>
+
+    <div class="memory-wall">
+      <div class="memory-card">The night you told me to come talk to you when I feel alone—I'll never forget that.</div>
+      <div class="memory-card">That time we laughed over something dumb for like 10 minutes straight—it still makes me smile.</div>
+      <div class="memory-card">Whenever I think no one understands me, I remember how patiently you listen.</div>
+      <div class="memory-card">Even our silences have comfort. That’s not something I feel with everyone.</div>
+    </div>
+
+    <div id="futureMessage"></div>
+    <button onclick="showFutureMessage()">Message for Today</button>
+
+    <div id="letterMessage"></div>
+    <button onclick="showLetter()">Open Letter From Koushik</button>
+
+    <div class="mood-buttons">
+      <p>How are you feeling today?</p>
+      <button onclick="showMood('😊')">😊</button>
+      <button onclick="showMood('😐')">😐</button>
+      <button onclick="showMood('😔')">😔</button>
+    </div>
+    <div id="moodResponse"></div>
+
+    <p style="margin-top: 2rem; font-weight: bold;">🎵 Songs for You</p>
+    <iframe style="height: 352px;" src="https://open.spotify.com/embed/playlist/45zeJmTBHX2tq3nHCEziBB?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+
+    <footer>
+      You’re not alone. Not now, not ever. – K
+    </footer>
+  </div>
+
+  <script>
+    const messages = [
+      "You told me once: 'Come to me if you feel alone.' I hope you know that goes both ways.",
+      "I may not be sitting next to you, but a part of me always listens when you think in silence.",
+      "Take a deep breath. One moment at a time. You don’t have to have it all figured out.",
+      "You're allowed to feel tired. Just don’t forget how strong you are.",
+      "The world gets heavy sometimes, but you're someone who carries it with grace. And I see that.",
+      "Don’t forget to tell your brain to chill sometimes. It’s overthinking again.",
+      "If you’re smiling right now, good. If not, go drink water and try again 😄.",
+      "You're the kind of friend who makes boring things fun and hard days lighter.",
+      "This is a Bhanu Appreciation Message™. You’ve been amazing today.",
+      "I hope something makes you laugh so hard today that your stomach hurts.",
+      "Some people just listen. You understand. And that’s rare.",
+      "You’ve made more impact just by being there than you’ll ever realize.",
+      "No matter how far life takes us, I hope you’ll still feel this friendship close.",
+      "If this page feels small, it’s because words can’t fully hold everything you’ve done for me."
+    ];
+
+    const vaultMessages = [
+      "You made it through today. That’s enough. I'm proud of you.",
+      "If no one said it today: You’re doing great, really.",
+      "Some days are hard. That doesn’t mean you are.",
+      "You’ve come further than you give yourself credit for.",
+      "You don’t have to be okay every single day. I’m still here, anyway."
+    ];
+
+    const futureNotes = {
+      "8-3": "Happy Friendship Day, Chutki! You’re the calm in my chaos. Thank you for being there.",
+      "12-6": "Happy Birthday Bhanu! 🎉 Just in case you need a reminder—you make life lighter.",
+      "default": "Whatever today is, I’m glad you’re here. One day at a time."
+    };
+
+    const letter = `
+      Dear Chutki,<br><br>
+      I don’t know where life will take either of us, but I hope this friendship stays strong no matter what.
+      You’ve been one of the few people who truly listened—without judgment, without rushing me.
+      I built this so that even when I’m not around, you’ll always have a reminder: you matter, you are appreciated, and you are not alone.<br><br>
+      Take care of yourself the way you care for others. You deserve that much and more.<br><br>
+      Your friend,<br>
+      – K
+    `;
+
+    function showMessage() {
+      const randomIndex = Math.floor(Math.random() * messages.length);
+      const box = document.getElementById('messageBox');
+      box.innerText = messages[randomIndex];
+      box.style.display = 'flex';
+    }
+
+    function revealVault() {
+      const vaultIndex = Math.floor(Math.random() * vaultMessages.length);
+      const box = document.getElementById('vaultMessage');
+      box.innerText = vaultMessages[vaultIndex];
+      box.style.display = 'flex';
+    }
+
+    function showFutureMessage() {
+      const now = new Date();
+      const key = `${now.getMonth() + 1}-${now.getDate()}`;
+      const text = futureNotes[key] || futureNotes["default"];
+      const box = document.getElementById('futureMessage');
+      box.innerText = text;
+      box.style.display = 'flex';
+    }
+
+    function showLetter() {
+      const box = document.getElementById('letterMessage');
+      box.innerHTML = letter;
+      box.style.display = 'flex';
+      box.style.flexDirection = 'column';
+      box.style.textAlign = 'left';
+    }
+
+    function showMood(mood) {
+      const box = document.getElementById('moodResponse');
+      let response = "";
+      if (mood === "😊") response = "That’s great! Keep shining.";
+      if (mood === "😐") response = "It’s okay to feel ‘meh.’ Maybe take a little break.";
+      if (mood === "😔") response = "Bad days happen, but they don’t last forever. You’re not alone.";
+      box.innerText = response;
+    }
+
+    function updateGreeting() {
+      const now = new Date();
+      const hour = now.getHours();
+      let greeting;
+      if (hour < 12) {
+        greeting = "Good morning, Chutki 🌤️";
+      } else if (hour < 18) {
+        greeting = "Good afternoon, Chutki ☀️";
+      } else {
+        greeting = "Good evening, Chutki 🌙";
+      }
+      document.getElementById('greeting').innerText = greeting;
+    }
+
+    updateGreeting();
+  </script>
+</body>
+</html>
